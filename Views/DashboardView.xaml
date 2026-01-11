@@ -1,0 +1,160 @@
+<UserControl x:Class="SophicIoTManager.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF">
+
+    <UserControl.Resources>
+        <!-- Light Blue Color for all count values -->
+        <SolidColorBrush x:Key="CountValueColor" Color="#00D9FF"/>
+        <!-- Lighter color for labels -->
+        <SolidColorBrush x:Key="LabelColor" Color="#B8C5D0"/>
+        
+        <!-- Stats Card Style -->
+        <Style x:Key="StatsCard" TargetType="Border">
+            <Setter Property="Background" Value="#1B263B"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        
+        <!-- Chart Container Style -->
+        <Style x:Key="ChartContainer" TargetType="Border">
+            <Setter Property="Background" Value="#1B263B"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Stats Cards Row -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+            <!-- Total Projects -->
+            <Border Style="{StaticResource StatsCard}" MinWidth="110">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="📁" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalProjects}" FontSize="26" FontWeight="Bold" 
+                               Foreground="{StaticResource CountValueColor}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Projects" FontSize="11" Foreground="{StaticResource LabelColor}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Gateways -->
+            <Border Style="{StaticResource StatsCard}" MinWidth="110">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="📡" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalGateways}" FontSize="26" FontWeight="Bold" 
+                               Foreground="{StaticResource CountValueColor}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Gateways" FontSize="11" Foreground="{StaticResource LabelColor}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Devices -->
+            <Border Style="{StaticResource StatsCard}" MinWidth="110">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="📱" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalDevices}" FontSize="26" FontWeight="Bold" 
+                               Foreground="{StaticResource CountValueColor}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Devices" FontSize="11" Foreground="{StaticResource LabelColor}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Online Devices -->
+            <Border Style="{StaticResource StatsCard}" MinWidth="110">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="✅" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding OnlineDevices}" FontSize="26" FontWeight="Bold" 
+                               Foreground="{StaticResource CountValueColor}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Online" FontSize="11" Foreground="{StaticResource LabelColor}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Offline Devices -->
+            <Border Style="{StaticResource StatsCard}" MinWidth="110">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="⚫" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding OfflineDevices}" FontSize="26" FontWeight="Bold" 
+                               Foreground="{StaticResource CountValueColor}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Offline" FontSize="11" Foreground="{StaticResource LabelColor}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Error Devices -->
+            <Border Style="{StaticResource StatsCard}" MinWidth="110">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="⚠️" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding ErrorDevices}" FontSize="26" FontWeight="Bold" 
+                               Foreground="{StaticResource CountValueColor}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Errors" FontSize="11" Foreground="{StaticResource LabelColor}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- Charts Row 1: Pie (larger) and Bar -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Pie Chart: Device Status (Bigger) -->
+            <Border Grid.Column="0" Style="{StaticResource ChartContainer}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Device Status Distribution" 
+                               FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource LabelColor}" Margin="0,0,0,4"/>
+                    <lvc:PieChart Grid.Row="1" 
+                                  Series="{Binding StatusPieSeries}"
+                                  LegendPosition="Right"
+                                  LegendTextPaint="{x:Null}"
+                                  InitialRotation="-90"
+                                  MinHeight="140"/>
+                </Grid>
+            </Border>
+
+            <!-- Bar Chart: Devices Per Project -->
+            <Border Grid.Column="1" Style="{StaticResource ChartContainer}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Devices per Project" 
+                               FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource LabelColor}" Margin="0,0,0,4"/>
+                    <lvc:CartesianChart Grid.Row="1"
+                                        Series="{Binding DevicesPerProjectSeries}"
+                                        XAxes="{Binding BarChartXAxes}"
+                                        YAxes="{Binding BarChartYAxes}"
+                                        MinHeight="120"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Charts Row 2: Line Chart -->
+        <Border Grid.Row="2" Style="{StaticResource ChartContainer}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Real-Time Sensor Values" 
+                           FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource LabelColor}" Margin="0,0,0,4"/>
+                <lvc:CartesianChart Grid.Row="1"
+                                    Series="{Binding RealTimeValuesSeries}"
+                                    XAxes="{Binding LineChartXAxes}"
+                                    YAxes="{Binding LineChartYAxes}"
+                                    AnimationsSpeed="00:00:00.300"
+                                    MinHeight="100"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

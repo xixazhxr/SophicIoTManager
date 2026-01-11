@@ -1,0 +1,16 @@
+<Application x:Class="SophicIoTManager.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SophicIoTManager"
+             Startup="Application_Startup"
+             Exit="Application_Exit">
+    <Application.Resources>
+        <!-- Global Application Resources -->
+        <ResourceDictionary>
+            <!-- Default Font Family -->
+            <FontFamily x:Key="DefaultFont">Segoe UI, Arial</FontFamily>
+            
+            <!-- Application-wide styles can be added here -->
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

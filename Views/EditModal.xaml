@@ -1,0 +1,228 @@
+<UserControl x:Class="SophicIoTManager.Views.EditModal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SophicIoTManager.Views">
+
+    <UserControl.Resources>
+        <!-- TextBox Style -->
+        <Style x:Key="ModalTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#0D1B2A"/>
+            <Setter Property="Foreground" Value="#E0E1DD"/>
+            <Setter Property="BorderBrush" Value="#415A77"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CaretBrush" Value="#00D9FF"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#00D9FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox Style -->
+        <Style x:Key="ModalComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#0D1B2A"/>
+            <Setter Property="Foreground" Value="#E0E1DD"/>
+            <Setter Property="BorderBrush" Value="#415A77"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <!-- Button Styles -->
+        <Style x:Key="BtnSave" TargetType="Button">
+            <Setter Property="Background" Value="#00E676"/>
+            <Setter Property="Foreground" Value="#0D1B2A"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#69F0AE"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BtnCancel" TargetType="Button">
+            <Setter Property="Background" Value="#415A77"/>
+            <Setter Property="Foreground" Value="#E0E1DD"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#5A7A9A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Visibility Converters -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <!-- Modal Overlay -->
+    <Grid Visibility="{Binding IsOpen, Converter={StaticResource BoolToVis}}">
+        <!-- Dark Background Overlay -->
+        <Border Background="#80000000" MouseDown="Overlay_MouseDown"/>
+
+        <!-- Modal Container with Animation -->
+        <Border Background="#1B263B" 
+                CornerRadius="12" 
+                MaxWidth="500" 
+                MaxHeight="600"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Margin="40">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.5"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Border Grid.Row="0" Background="#0D1B2A" Padding="20,16" CornerRadius="12,12,0,0">
+                    <Grid>
+                        <TextBlock Text="{Binding ModalTitle}" 
+                                   FontSize="16" FontWeight="Bold" 
+                                   Foreground="#E0E1DD" VerticalAlignment="Center"/>
+                        <Button Content="✕" 
+                                Command="{Binding CancelCommand}"
+                                HorizontalAlignment="Right"
+                                Background="Transparent" Foreground="#778DA9"
+                                BorderThickness="0" FontSize="16" Cursor="Hand"
+                                Padding="8,4"/>
+                    </Grid>
+                </Border>
+
+                <!-- Content -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
+                    <StackPanel>
+                        <!-- Project Fields -->
+                        <StackPanel Visibility="{Binding IsEditingProject, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="Name" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModalTextBox}" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="Description" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding ProjectDescription, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModalTextBox}" 
+                                     TextWrapping="Wrap" AcceptsReturn="True" Height="80"/>
+                        </StackPanel>
+
+                        <!-- Gateway Fields -->
+                        <StackPanel Visibility="{Binding IsEditingGateway, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="Name" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding GatewayName, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModalTextBox}" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="Gateway EUI" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding GatewayEUI, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModalTextBox}" FontFamily="Consolas" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="Location" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding GatewayLocation, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModalTextBox}" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="Frequency Band" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <ComboBox ItemsSource="{Binding FrequencyBands}" 
+                                      SelectedItem="{Binding GatewayFrequencyBand}"
+                                      Style="{StaticResource ModalComboBox}"/>
+                        </StackPanel>
+
+                        <!-- Device Fields -->
+                        <StackPanel Visibility="{Binding IsEditingDevice, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="Name" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding DeviceName, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModalTextBox}" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="Type" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                            <ComboBox ItemsSource="{Binding DeviceTypes}" 
+                                      SelectedItem="{Binding DeviceType}"
+                                      Style="{StaticResource ModalComboBox}" Margin="0,0,0,16"/>
+
+                            <!-- LoRaWAN Section -->
+                            <Border BorderBrush="#415A77" BorderThickness="0,1,0,0" Padding="0,16,0,0" Margin="0,8,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="LoRaWAN Settings" Foreground="#00D9FF" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                                    <TextBlock Text="DevEUI" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding DevEUI, UpdateSourceTrigger=PropertyChanged}" 
+                                             Style="{StaticResource ModalTextBox}" FontFamily="Consolas" Margin="0,0,0,12"/>
+
+                                    <TextBlock Text="JoinEUI (AppEUI)" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding JoinEUI, UpdateSourceTrigger=PropertyChanged}" 
+                                             Style="{StaticResource ModalTextBox}" FontFamily="Consolas" Margin="0,0,0,12"/>
+
+                                    <TextBlock Text="AppKey" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                                    <TextBox Text="{Binding AppKey, UpdateSourceTrigger=PropertyChanged}" 
+                                             Style="{StaticResource ModalTextBox}" FontFamily="Consolas" Margin="0,0,0,12"/>
+
+                                    <TextBlock Text="Activation Mode" Foreground="#778DA9" FontSize="11" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding ActivationModes}" 
+                                              SelectedItem="{Binding ActivationMode}"
+                                              Style="{StaticResource ModalComboBox}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Error Message -->
+                <Border Grid.Row="2" Background="#FF5252" Padding="12,8" Margin="0"
+                        Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisConverter}, FallbackValue=Collapsed}">
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="White" FontSize="12"/>
+                </Border>
+
+                <!-- Footer Buttons -->
+                <Border Grid.Row="3" Background="#0D1B2A" Padding="20,16" CornerRadius="0,0,12,12">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Cancel" Command="{Binding CancelCommand}" Style="{StaticResource BtnCancel}" Margin="0,0,12,0"/>
+                        <Button Content="💾 Save" Command="{Binding SaveCommand}" Style="{StaticResource BtnSave}" IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}, FallbackValue=True}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
