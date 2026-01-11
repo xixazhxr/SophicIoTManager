@@ -247,10 +247,10 @@ public class SerialDeviceService : IDeviceService
 
 ## License
 
-This project was created for educational purposes demonstrating WPF, MVVM, and real-time data visualization best practices.
+This project was created for assesment purposes demonstrating WPF, MVVM, and real-time data visualization best practices.
 
 ---
 
 ## Author
 
-**Sophic Automation © 2026**
+**Aidil Azhar © 2026**
