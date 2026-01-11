@@ -228,46 +228,49 @@
                             <!-- Context Menu for Project -->
                             <ContextMenu x:Key="ProjectContextMenu">
                                 <MenuItem Header="➕ Add Gateway" 
-                                          Command="{Binding DataContext.AddGatewayCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddGatewayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                 <MenuItem Header="➕ Add Device" 
-                                          Command="{Binding DataContext.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                 <Separator/>
                                 <MenuItem Header="✏️ Edit Project" 
-                                          Command="{Binding DataContext.EditProjectCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          Command="{Binding PlacementTarget.Tag.EditProjectCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           CommandParameter="{Binding}"/>
                                 <MenuItem Header="🗑️ Delete Project" 
-                                          Command="{Binding DataContext.DeleteProjectCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.DeleteProjectCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                             </ContextMenu>
 
                             <!-- Context Menu for Gateway -->
                             <ContextMenu x:Key="GatewayContextMenu">
                                 <MenuItem Header="➕ Add Device" 
-                                          Command="{Binding DataContext.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                                 <Separator/>
                                 <MenuItem Header="✏️ Edit Gateway" 
-                                          Command="{Binding DataContext.EditGatewayCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          Command="{Binding PlacementTarget.Tag.EditGatewayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           CommandParameter="{Binding}"/>
                                 <MenuItem Header="🔌 Toggle Status" 
-                                          Command="{Binding DataContext.ToggleGatewayStatusCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.ToggleGatewayStatusCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
                                 <MenuItem Header="🗑️ Delete Gateway" 
-                                          Command="{Binding DataContext.DeleteGatewayCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.DeleteGatewayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                             </ContextMenu>
 
                             <!-- Context Menu for Device -->
                             <ContextMenu x:Key="DeviceContextMenu">
                                 <MenuItem Header="✏️ Edit Device" 
-                                          Command="{Binding DataContext.EditDeviceCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          Command="{Binding PlacementTarget.Tag.EditDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           CommandParameter="{Binding}"/>
                                 <MenuItem Header="🔌 Toggle Status" 
-                                          Command="{Binding DataContext.ToggleDeviceStatusCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.ToggleDeviceStatusCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
                                 <Separator/>
                                 <MenuItem Header="🗑️ Delete Device" 
-                                          Command="{Binding DataContext.DeleteDeviceCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                          Command="{Binding PlacementTarget.Tag.DeleteDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                             </ContextMenu>
 
                             <!-- Project Template -->
                             <HierarchicalDataTemplate DataType="{x:Type vm:ProjectViewModel}" ItemsSource="{Binding Children}">
-                                <Grid x:Name="ProjectItem" ContextMenu="{StaticResource ProjectContextMenu}">
+                                <Grid x:Name="ProjectItem" ContextMenu="{StaticResource ProjectContextMenu}"
+                                      Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -292,7 +295,8 @@
 
                             <!-- Gateway Template -->
                             <HierarchicalDataTemplate DataType="{x:Type vm:GatewayViewModel}" ItemsSource="{Binding Devices}">
-                                <Grid x:Name="GatewayItem" ContextMenu="{StaticResource GatewayContextMenu}">
+                                <Grid x:Name="GatewayItem" ContextMenu="{StaticResource GatewayContextMenu}"
+                                      Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -312,7 +316,8 @@
 
                             <!-- Device Template -->
                             <DataTemplate DataType="{x:Type vm:DeviceViewModel}">
-                                <Grid x:Name="DeviceItem" ContextMenu="{StaticResource DeviceContextMenu}">
+                                <Grid x:Name="DeviceItem" ContextMenu="{StaticResource DeviceContextMenu}"
+                                      Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>

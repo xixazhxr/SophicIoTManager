@@ -183,6 +183,7 @@ namespace SophicIoTManager.ViewModels
             // Load data and start simulation
             _ = LoadDataAsync();
             StartSimulation();
+            Dashboard.UpdateSimulationStatus(IsSimulationRunning);
         }
 
         #endregion
@@ -495,6 +496,7 @@ namespace SophicIoTManager.ViewModels
         {
             _deviceService.StartSimulation();
             IsSimulationRunning = _deviceService.IsSimulationRunning;
+            Dashboard.UpdateSimulationStatus(IsSimulationRunning);
             StatusMessage = "Simulation Running";
         }
 
@@ -503,6 +505,7 @@ namespace SophicIoTManager.ViewModels
         {
             _deviceService.StopSimulation();
             IsSimulationRunning = _deviceService.IsSimulationRunning;
+            Dashboard.UpdateSimulationStatus(IsSimulationRunning);
             StatusMessage = "Simulation Stopped";
         }
 
@@ -543,6 +546,7 @@ namespace SophicIoTManager.ViewModels
             {
                 var projectVm = new ProjectViewModel(e.Project);
                 Projects.Add(projectVm);
+                UpdateCounts();
             });
         }
 
@@ -570,6 +574,7 @@ namespace SophicIoTManager.ViewModels
                     projectVm.Gateways.Add(gatewayVm);
                     projectVm.RefreshChildren();
                 }
+                UpdateCounts();
             });
         }
 
@@ -598,6 +603,7 @@ namespace SophicIoTManager.ViewModels
                 var projectVm = Projects.FirstOrDefault(p => p.Id == e.Gateway.ProjectId);
                 var gatewayVm = projectVm?.Gateways.FirstOrDefault(g => g.Id == e.Gateway.Id);
                 gatewayVm?.Refresh();
+                UpdateCounts();
             });
         }
 
@@ -703,6 +709,9 @@ namespace SophicIoTManager.ViewModels
                 {
                     SystemLogs.RemoveAt(SystemLogs.Count - 1);
                 }
+
+                // Update Dashboard Log
+                Dashboard.AddLogEntry(e.LogEntry.Level.ToString(), e.LogEntry.Message);
             });
         }
 

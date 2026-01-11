@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SophicIoTManager.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace SophicIoTManager.ViewModels
@@ -60,6 +61,22 @@ namespace SophicIoTManager.ViewModels
         /// Devices directly under the project (no gateway).
         /// </summary>
         public ObservableCollection<DeviceViewModel> Devices { get; } = new();
+
+        /// <summary>
+        /// All devices in this project (from gateways + direct).
+        /// Used for binding in dashboard.
+        /// </summary>
+        public IEnumerable<DeviceViewModel> AllDevices
+        {
+            get
+            {
+                foreach (var dev in Devices)
+                    yield return dev;
+                foreach (var gw in Gateways)
+                    foreach (var dev in gw.Devices)
+                        yield return dev;
+            }
+        }
 
         /// <summary>
         /// Combined children for TreeView (Gateways + Direct Devices).

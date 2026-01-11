@@ -34,19 +34,27 @@ namespace SophicIoTManager
         /// </summary>
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // Configure the Dependency Injection container
-            var services = new ServiceCollection();
-            ConfigureServices(services);
-            _serviceProvider = services.BuildServiceProvider();
-            Services = _serviceProvider;
-
-            // Create and show the main window with injected ViewModel
-            var mainWindow = new MainWindow
+            try
             {
-                DataContext = _serviceProvider.GetRequiredService<MainViewModel>()
-            };
+                // Configure the Dependency Injection container
+                var services = new ServiceCollection();
+                ConfigureServices(services);
+                _serviceProvider = services.BuildServiceProvider();
+                Services = _serviceProvider;
 
-            mainWindow.Show();
+                // Create and show the main window with injected ViewModel
+                var mainWindow = new MainWindow
+                {
+                    DataContext = _serviceProvider.GetRequiredService<MainViewModel>()
+                };
+
+                mainWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Startup Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}", "Critical Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(-1);
+            }
         }
 
         /// <summary>

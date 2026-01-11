@@ -63,6 +63,44 @@ namespace SophicIoTManager.ViewModels
         [ObservableProperty]
         private int _errorDevices;
 
+        /// <summary>
+        /// Whether the simulation is currently running.
+        /// </summary>
+        [ObservableProperty]
+        private bool _isSimulationRunning;
+
+        #endregion
+
+        #region Observable Properties - Collections
+
+        /// <summary>
+        /// Collection of projects for display in the dashboard.
+        /// </summary>
+        public ObservableCollection<ProjectViewModel> ProjectsCollection { get; } = new();
+
+        /// <summary>
+        /// Collection of log entries for display.
+        /// </summary>
+        public ObservableCollection<DashboardLogEntry> LogEntries { get; } = new();
+
+        /// <summary>
+        /// Currently selected item name for details display.
+        /// </summary>
+        [ObservableProperty]
+        private string _selectedItemName = "No Selection";
+
+        /// <summary>
+        /// Type of selected item (Project/Gateway/Device).
+        /// </summary>
+        [ObservableProperty]
+        private string _selectedItemType = "";
+
+        /// <summary>
+        /// Details of selected item.
+        /// </summary>
+        [ObservableProperty]
+        private string _selectedItemDetails = "";
+
         #endregion
 
         #region Chart Series
@@ -221,6 +259,13 @@ namespace SophicIoTManager.ViewModels
             OfflineDevices = offline;
             ErrorDevices = error;
 
+            // Update ProjectsCollection for UI binding
+            ProjectsCollection.Clear();
+            foreach (var project in projectList)
+            {
+                ProjectsCollection.Add(project);
+            }
+
             // Update Pie Chart
             UpdatePieChart();
 
@@ -350,5 +395,91 @@ namespace SophicIoTManager.ViewModels
         }
 
         #endregion
+
+        #region Log Methods
+
+        /// <summary>
+        /// Adds a log entry to the dashboard log.
+        /// </summary>
+        public void AddLogEntry(string level, string message)
+        {
+            var entry = new DashboardLogEntry
+            {
+                Timestamp = DateTime.Now.ToString("HH:mm:ss"),
+                Level = level,
+                Message = message
+            };
+
+            // Add at beginning (most recent first)
+            LogEntries.Insert(0, entry);
+
+            // Keep only last 50 entries
+            while (LogEntries.Count > 50)
+            {
+                LogEntries.RemoveAt(LogEntries.Count - 1);
+            }
+        }
+
+        /// <summary>
+        /// Updates the selected item details for display.
+        /// </summary>
+        public void UpdateSelectedItem(object? item)
+        {
+            if (item is ProjectViewModel project)
+            {
+                SelectedItemName = project.Name;
+                SelectedItemType = "Project";
+                SelectedItemDetails = $"Gateways: {project.Gateways.Count}, Devices: {project.GetTotalDeviceCount()}";
+            }
+            else if (item is GatewayViewModel gateway)
+            {
+                SelectedItemName = gateway.Name;
+                SelectedItemType = "Gateway";
+                SelectedItemDetails = $"Status: {gateway.StatusDisplay}, Devices: {gateway.Devices.Count}";
+            }
+            else if (item is DeviceViewModel device)
+            {
+                SelectedItemName = device.Name;
+                SelectedItemType = "Device";
+                SelectedItemDetails = $"Status: {device.StatusDisplay}, Value: {device.ValueDisplay}";
+            }
+            else
+            {
+                SelectedItemName = "No Selection";
+                SelectedItemType = "";
+                SelectedItemDetails = "";
+            }
+        }
+
+        /// <summary>
+        /// Updates the simulation status.
+        /// </summary>
+        public void UpdateSimulationStatus(bool isRunning)
+        {
+            IsSimulationRunning = isRunning;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Represents a log entry for the dashboard display.
+    /// </summary>
+    public class DashboardLogEntry
+    {
+        public string Timestamp { get; set; } = "";
+        public string Level { get; set; } = "";
+        public string Message { get; set; } = "";
+
+        /// <summary>
+        /// Color based on log level.
+        /// </summary>
+        public string LevelColor => Level.ToLower() switch
+        {
+            "error" => "#FF6B6B",
+            "warn" or "warning" => "#FFD166",
+            "success" or "info" => "#06D6A0",
+            _ => "#778DA9"
+        };
     }
 }

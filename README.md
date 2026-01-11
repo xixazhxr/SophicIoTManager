@@ -29,7 +29,7 @@ A modern WPF Desktop Application for IoT device management with real-time dashbo
 # Clone or navigate to the project
 cd SophicIoTManager
 
-# Restore NuGet packages (includes LiveCharts2)
+# Restore the project
 dotnet restore
 
 # Build the project
@@ -37,6 +37,12 @@ dotnet build
 
 # Run the application
 dotnet run
+
+# Stop the application (choose one):
+# Option 1: Close the app window (click X)
+# Option 2: Press Ctrl+C in the terminal
+# Option 3: Use PowerShell:
+Get-Process | Where-Object {$_.ProcessName -like "*SophicIoT*"} | Stop-Process -Force
 ```
 
 ### Visual Studio

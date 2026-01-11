@@ -35,10 +35,17 @@
         <!-- ComboBox Style -->
         <Style x:Key="ModalComboBox" TargetType="ComboBox">
             <Setter Property="Background" Value="#0D1B2A"/>
-            <Setter Property="Foreground" Value="#E0E1DD"/>
+            <Setter Property="Foreground" Value="#0D1B2A"/>
             <Setter Property="BorderBrush" Value="#415A77"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="FontSize" Value="13"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Foreground" Value="#0D1B2A"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- Button Styles -->
