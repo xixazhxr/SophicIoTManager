@@ -104,19 +104,19 @@ Get-Process | Where-Object {$_.ProcessName -like "*SophicIoT*"} | Stop-Process -
 ### MVVM Pattern
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                        VIEW                              │
+│                        VIEW                             │
 │  MainWindow.xaml, DashboardView.xaml, EditModal.xaml    │
 ├─────────────────────────────────────────────────────────┤
-│                     VIEW MODEL                           │
-│  MainViewModel, DashboardViewModel, EditModalViewModel   │
-│  DeviceViewModel, GatewayViewModel, ProjectViewModel     │
+│                     VIEW MODEL                          │
+│  MainViewModel, DashboardViewModel, EditModalViewModel  │
+│  DeviceViewModel, GatewayViewModel, ProjectViewModel    │
 ├─────────────────────────────────────────────────────────┤
-│                      MODEL                               │
+│                      MODEL                              │
 │  Device.cs, Gateway.cs, Project.cs, LogEntry.cs         │
 ├─────────────────────────────────────────────────────────┤
-│                     SERVICES                             │
-│  IDeviceService.cs (Interface)                           │
-│  MockDeviceService.cs (Simulation Implementation)        │
+│                     SERVICES                            │
+│  IDeviceService.cs (Interface)                          │
+│  MockDeviceService.cs (Simulation Implementation)       │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -247,10 +247,10 @@ public class SerialDeviceService : IDeviceService
 
 ## License
 
-This project was created for educational purposes demonstrating WPF, MVVM, and real-time data visualization best practices.
+This project was created for assesment purposes demonstrating WPF, MVVM, and real-time data visualization best practices.
 
 ---
 
 ## Author
 
-**Sophic Automation © 2026**
+**Aidil Azhar © 2026**
