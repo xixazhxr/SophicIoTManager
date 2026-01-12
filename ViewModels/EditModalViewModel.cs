@@ -27,7 +27,11 @@ namespace SophicIoTManager.ViewModels
         #region Fields
 
         private readonly IDeviceService _deviceService;
+
         private Guid _editingItemId;
+        private bool _isAdding;
+        private Guid _parentId;
+        private Guid? _parentGatewayId;
 
         #endregion
 
@@ -158,6 +162,72 @@ namespace SophicIoTManager.ViewModels
 
         #region Public Methods - Open Modal
 
+        #region Public Methods - Open Modal for Add
+
+        public void OpenForAddProject()
+        {
+            _isAdding = true;
+            ItemType = EditItemType.Project;
+            ModalTitle = "➕ New Project";
+
+            ProjectName = string.Empty;
+            ProjectDescription = string.Empty;
+
+            ErrorMessage = string.Empty;
+            IsOpen = true;
+
+            OnPropertyChanged(nameof(IsEditingProject));
+            OnPropertyChanged(nameof(IsEditingGateway));
+            OnPropertyChanged(nameof(IsEditingDevice));
+        }
+
+        public void OpenForAddGateway(Guid projectId)
+        {
+            _isAdding = true;
+            _parentId = projectId;
+            ItemType = EditItemType.Gateway;
+            ModalTitle = "➕ New Gateway";
+
+            GatewayName = string.Empty;
+            GatewayEUI = string.Empty;
+            GatewayLocation = string.Empty;
+            GatewayFrequencyBand = "EU868";
+
+            ErrorMessage = string.Empty;
+            IsOpen = true;
+
+            OnPropertyChanged(nameof(IsEditingProject));
+            OnPropertyChanged(nameof(IsEditingGateway));
+            OnPropertyChanged(nameof(IsEditingDevice));
+        }
+
+        public void OpenForAddDevice(Guid projectId, Guid? gatewayId)
+        {
+            _isAdding = true;
+            _parentId = projectId;
+            _parentGatewayId = gatewayId;
+            ItemType = EditItemType.Device;
+            ModalTitle = "➕ New Device";
+
+            DeviceName = string.Empty;
+            DeviceType = DeviceType.Temperature;
+            DevEUI = string.Empty;
+            JoinEUI = string.Empty;
+            AppKey = string.Empty;
+            ActivationMode = ActivationMode.OTAA;
+
+            ErrorMessage = string.Empty;
+            IsOpen = true;
+
+            OnPropertyChanged(nameof(IsEditingProject));
+            OnPropertyChanged(nameof(IsEditingGateway));
+            OnPropertyChanged(nameof(IsEditingDevice));
+        }
+
+        #endregion
+
+        #region Public Methods - Open Modal for Edit
+
         /// <summary>
         /// Opens the modal to edit a project.
         /// </summary>
@@ -165,6 +235,7 @@ namespace SophicIoTManager.ViewModels
         {
             if (project == null) return;
 
+            _isAdding = false;
             _editingItemId = project.Id;
             ItemType = EditItemType.Project;
             ModalTitle = $"✏️ Edit Project: {project.Name}";
@@ -188,6 +259,7 @@ namespace SophicIoTManager.ViewModels
         {
             if (gateway == null) return;
 
+            _isAdding = false;
             _editingItemId = gateway.Id;
             ItemType = EditItemType.Gateway;
             ModalTitle = $"✏️ Edit Gateway: {gateway.Name}";
@@ -213,6 +285,7 @@ namespace SophicIoTManager.ViewModels
         {
             if (device == null) return;
 
+            _isAdding = false;
             _editingItemId = device.Id;
             ItemType = EditItemType.Device;
             ModalTitle = $"✏️ Edit Device: {device.Name}";
@@ -232,6 +305,8 @@ namespace SophicIoTManager.ViewModels
             OnPropertyChanged(nameof(IsEditingGateway));
             OnPropertyChanged(nameof(IsEditingDevice));
         }
+
+        #endregion
 
         #endregion
 
@@ -256,9 +331,9 @@ namespace SophicIoTManager.ViewModels
             {
                 bool success = ItemType switch
                 {
-                    EditItemType.Project => await SaveProjectAsync(),
-                    EditItemType.Gateway => await SaveGatewayAsync(),
-                    EditItemType.Device => await SaveDeviceAsync(),
+                    EditItemType.Project => _isAdding ? await AddProjectAsync() : await SaveProjectAsync(),
+                    EditItemType.Gateway => _isAdding ? await AddGatewayAsync() : await SaveGatewayAsync(),
+                    EditItemType.Device => _isAdding ? await AddDeviceAsync() : await SaveDeviceAsync(),
                     _ => false
                 };
 
@@ -373,6 +448,36 @@ namespace SophicIoTManager.ViewModels
             device.ActivationMode = ActivationMode;
 
             return await _deviceService.UpdateDeviceAsync(device);
+        }
+
+
+
+        private async Task<bool> AddProjectAsync()
+        {
+            var project = new Project(ProjectName.Trim(), ProjectDescription.Trim());
+            return await _deviceService.AddProjectAsync(project);
+        }
+
+        private async Task<bool> AddGatewayAsync()
+        {
+            var gateway = new Gateway(GatewayName.Trim(), _parentId, GatewayEUI.Trim())
+            {
+                Location = GatewayLocation.Trim(),
+                FrequencyBand = GatewayFrequencyBand
+            };
+            return await _deviceService.AddGatewayAsync(gateway);
+        }
+
+        private async Task<bool> AddDeviceAsync()
+        {
+            var device = new Device(DeviceName.Trim(), DeviceType, _parentId, _parentGatewayId)
+            {
+                DevEUI = DevEUI.Trim(),
+                JoinEUI = JoinEUI.Trim(),
+                AppKey = AppKey.Trim(),
+                ActivationMode = ActivationMode
+            };
+            return await _deviceService.AddDeviceAsync(device);
         }
 
         #endregion

@@ -259,15 +259,9 @@ namespace SophicIoTManager.ViewModels
         #region Project Commands
 
         [RelayCommand]
-        private async Task AddProjectAsync()
+        private void AddProject()
         {
-            if (string.IsNullOrWhiteSpace(NewProjectName)) return;
-
-            var project = new Project(NewProjectName.Trim(), NewProjectDescription.Trim());
-            await _deviceService.AddProjectAsync(project);
-
-            NewProjectName = string.Empty;
-            NewProjectDescription = string.Empty;
+            EditModal.OpenForAddProject();
         }
 
         [RelayCommand]
@@ -293,44 +287,18 @@ namespace SophicIoTManager.ViewModels
         #region Gateway Commands
 
         [RelayCommand]
-        private async Task AddGatewayAsync()
+        private void AddGateway(ProjectViewModel project)
         {
-            if (string.IsNullOrWhiteSpace(NewGatewayName)) return;
+            if (project != null)
+            {
+                EditModal.OpenForAddGateway(project.Id);
+                return;
+            }
 
-            // Determine parent project
-            Guid projectId;
             if (SelectedProject != null)
             {
-                projectId = SelectedProject.Id;
+                EditModal.OpenForAddGateway(SelectedProject.Id);
             }
-            else if (SelectedGateway != null)
-            {
-                projectId = SelectedGateway.ProjectId;
-            }
-            else if (SelectedDevice != null)
-            {
-                projectId = SelectedDevice.ProjectId;
-            }
-            else if (Projects.Count > 0)
-            {
-                projectId = Projects[0].Id;
-            }
-            else
-            {
-                return; // No project to add to
-            }
-
-            var gateway = new Gateway(NewGatewayName.Trim(), projectId, NewGatewayEUI.Trim())
-            {
-                Location = NewGatewayLocation.Trim(),
-                FrequencyBand = NewGatewayFrequency
-            };
-
-            await _deviceService.AddGatewayAsync(gateway);
-
-            NewGatewayName = string.Empty;
-            NewGatewayEUI = string.Empty;
-            NewGatewayLocation = string.Empty;
         }
 
         [RelayCommand]
@@ -363,42 +331,28 @@ namespace SophicIoTManager.ViewModels
         #region Device Commands
 
         [RelayCommand]
-        private async Task AddDeviceAsync()
+        private void AddDevice(object item)
         {
-            if (string.IsNullOrWhiteSpace(NewDeviceName)) return;
-
-            // Determine parent
-            Guid projectId;
-            Guid? gatewayId = null;
-
-            if (SelectedGateway != null)
+            if (item is ProjectViewModel project)
             {
-                projectId = SelectedGateway.ProjectId;
-                gatewayId = SelectedGateway.Id;
+                EditModal.OpenForAddDevice(project.Id, null);
+                return;
             }
-            else if (SelectedProject != null)
+            else if (item is GatewayViewModel gateway)
             {
-                projectId = SelectedProject.Id;
-            }
-            else if (SelectedDevice != null)
-            {
-                projectId = SelectedDevice.ProjectId;
-                gatewayId = SelectedDevice.GatewayId;
-            }
-            else if (Projects.Count > 0)
-            {
-                projectId = Projects[0].Id;
-            }
-            else
-            {
+                EditModal.OpenForAddDevice(gateway.ProjectId, gateway.Id);
                 return;
             }
 
-            var device = new Device(NewDeviceName.Trim(), NewDeviceType, projectId, gatewayId);
-            await _deviceService.AddDeviceAsync(device);
-
-            NewDeviceName = string.Empty;
-            UpdateCounts();
+            // Fallback to selection
+            if (SelectedGateway != null)
+            {
+                EditModal.OpenForAddDevice(SelectedGateway.ProjectId, SelectedGateway.Id);
+            }
+            else if (SelectedProject != null)
+            {
+                EditModal.OpenForAddDevice(SelectedProject.Id, null);
+            }
         }
 
         [RelayCommand]

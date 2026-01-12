@@ -228,9 +228,11 @@
                             <!-- Context Menu for Project -->
                             <ContextMenu x:Key="ProjectContextMenu">
                                 <MenuItem Header="➕ Add Gateway" 
-                                          Command="{Binding PlacementTarget.Tag.AddGatewayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddGatewayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
                                 <MenuItem Header="➕ Add Device" 
-                                          Command="{Binding PlacementTarget.Tag.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
                                 <Separator/>
                                 <MenuItem Header="✏️ Edit Project" 
                                           Command="{Binding PlacementTarget.Tag.EditProjectCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -242,7 +244,8 @@
                             <!-- Context Menu for Gateway -->
                             <ContextMenu x:Key="GatewayContextMenu">
                                 <MenuItem Header="➕ Add Device" 
-                                          Command="{Binding PlacementTarget.Tag.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddDeviceCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                          CommandParameter="{Binding}"/>
                                 <Separator/>
                                 <MenuItem Header="✏️ Edit Gateway" 
                                           Command="{Binding PlacementTarget.Tag.EditGatewayCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
